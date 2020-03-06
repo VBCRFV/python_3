@@ -44,15 +44,21 @@ if __name__ == '__main__':
         print('Ответ:',hex_str,'('+str(len(hex_list))+' байт)')
         print('Ответ от:',[hex_list[el] for el in range(4)])
         if req_f == '01':
-            data_list = [hex_list[el] for el in range(6,14)]
-            print('Ответ DATA:',data_list)
+            data_list = [hex_list[el] for el in range(6,14)][::-1]
+            print('Ответ DATA (list):',data_list)
             data_str = ""
             for el in data_list:
                 data_str = data_str +' '+ el
-            import struct
 
             DATA = data_str[1:].upper().replace(' ','')
-            print('Ответ DATA:', DATA)
+            print('Ответ DATA (HEXstr):', DATA)
+            data_bin = bin(int(DATA, 16))[2:].zfill(64)
+            print('Ответ DATA (bin):',len(data_bin), data_bin)
+            print('Ответ IEEE_754 (bin):', data_bin[:1],data_bin[1:12],data_bin[12:])
+            print('Ответ IEEE_754 (len(bin)):', len(data_bin[:1]), len(data_bin[1:12]), len(data_bin[12:]))
+            s,e,m = int(data_bin[:1],2), int(data_bin[1:12],2), int(data_bin[12:],2)
+            print('Ответ IEEE_754 (int(bin)):', s,e,m )
+            print('Ответ IEEE_754 (dec):', ((-1)**s)*(2**(e-1023))*(1+m/(2**52)))
             #print(struct.unpack("<f", "F03F".decode("hex")))
     except serial.serialutil.SerialException:
         print('Что то пошло не так.')
