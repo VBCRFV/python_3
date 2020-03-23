@@ -1,3 +1,6 @@
+__pycache__
+private.py
+api.py
 *.pem
 *.sec
 .*/
