@@ -8,6 +8,10 @@ __version__ = 20191107
     text_write()
         Добавлены параметры: mode, encoding.
 """
+def file_exists(path):
+    import os.path
+    return os.path.exists(path)
+
 def text_read(file_name):
     f = open(file_name)
     file = f.read()
@@ -60,12 +64,4 @@ def json_write_item(file_name, item, el=None):
 
 if __name__ == '__main__':
     pass
-    #text_write('name.txt','тест функции text_write из модуля bod_txt.py')
-    ###
-    #file_name = "json.json"
-    #json_write_item(file_name, {'itrem':1})
-    #print(text_read(file_name))
-    ###
-    #file_name = "conf.conf"
-    #json_write_item(file_name, {"strat": "0123456789"}, el=0)
-    #print(json_read(file_name)[0]['strat'])
+

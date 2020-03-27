@@ -1,1 +1,1 @@
-{"tickers":["btc","eth","ltc"],"btc": {"time": "12:00", "prim": true, "rnd": 4},"eth": {"time": "12:00", "prim": true, "rnd": 4},"ltc": {"time": "12:00", "prim": true, "rnd": 4}}
+{"btc": {"time": "13:00", "rnd": 4, "ratio": 1.0},"eth": {"time": "13:00", "rnd": 4, "ratio": 1.0},"ltc": {"time": "13:00", "rnd": 4, "ratio": 1.0}}

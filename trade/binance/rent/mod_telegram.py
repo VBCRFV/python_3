@@ -14,7 +14,7 @@ def telegram(text="тест",endpoints="getUpdates",timeout = 3,token = None, ch
     try:
         req = requests.get(url,timeout=timeout).text
     except requests.exceptions.ConnectTimeout:
-        print('telegram.org - недоступен, пробуем через Tor.(для этого он должен быть запущен)\n')
+        print('[ERROR] mod_telegram.telegram(): telegram.org - недоступен, пробуем через Tor.(для этого он должен быть установлен\запущен)')
         #import os
         #os.system('cmd /c "C:\\Users\\AT-BC-D1\\Desktop\\Tor Browser\\Browser\\firefox.exe"')
         import socket

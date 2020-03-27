@@ -28,18 +28,23 @@ class cls_binance():
             raise Exception("Необходима синхронизация времени.")
         else:
             if self.debug: print('Время сервера и локальное время синхронны. \n')
-    def get_deposit_history(self):
+    def get_deposit_history(self,asset=None,last=True):
         '''
         Запрос списка входящих транзакций.
         :param self:
         :return:
         '''
-        self.depositList = self.client.get_deposit_history(asset=self.asset.upper())['depositList']
+        if asset is None:
+            asset = self.asset.upper()
+        self.depositList = self.client.get_deposit_history(asset=asset.upper())['depositList']
         if self.debug: print('[DEBUG]','self.depositList:',self.depositList)
         if self.depositList == []:
             self.depositList = {'asset': self.asset.upper(), 'amount': 'None','insertTime': 1000}
         else:
-            self.depositList = self.depositList[-1]
+            if last:
+                self.depositList = self.depositList[0]
+            else:
+                pass
         return self.depositList
     def get_asset_balance(self, asset=None):
         '''
@@ -67,12 +72,36 @@ class cls_binance():
         return self.order_market
     def order_market_sell(self, symbol=None,quantity=None):
         '''
-        Продажа всего актива.
+        Продажа quantity актива.
         :param self:
         :param symbol: тикер (например: BTCUSDT, продаём BTC - покупаем USDT)
         :return:
         '''
         if symbol is None: symbol = self.symbol
-        free = self.balance['free']
-        self.order_market = self.client.order_market_sell(symbol=symbol,quantity=quantity)
-        return self.order_market
+        try:
+            self.order_market = self.client.order_market_sell(symbol=symbol,quantity=quantity)
+            return [True,self.order_market]
+        except:
+            print(f"[ERROR] mod_binance.cls_binance().order_market_sell(symbol={symbol},quantity={quantity}).except:")
+            self.balance = self.client.get_asset_balance(asset=symbol[:3])
+            return [False,self.balance]
+    def incoming(self,dbl):
+        from time import time as t
+        for el in dbl:
+            if dbl[el]['incoming'] == {}:
+                dbl[el]['incoming'].update({'requestTime': int(t())})
+                dbl[el]['incoming'].update(self.client.get_asset_balance(asset=el))
+        if dbl.get('USDT') is None:
+            dbl.update({'USDT':{'incoming':self.client.get_asset_balance(asset='USDT')}})
+            dbl['USDT']['incoming'].update({'requestTime': int(t())})
+        return dbl
+    def outgoing(self,dbl):
+        from time import time as t
+        for el in dbl:
+            if dbl[el]['outgoing'] == {}:
+                dbl[el]['outgoing'].update({'requestTime': int(t())})
+                dbl[el]['outgoing'].update(self.client.get_asset_balance(asset=el))
+        if dbl.get('USDT') is None:
+            dbl.update({'USDT':{'outgoing':self.client.get_asset_balance(asset='USDT')}})
+            dbl['USDT']['outgoing'].update({'requestTime': int(t())})
+        return dbl
