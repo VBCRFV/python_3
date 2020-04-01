@@ -85,7 +85,7 @@ def get_deposit_history(asset=None):
                            " " +str(deposit_history['asset']) + \
                            '   ' + str(dati)
     now_t = dt.now()
-    today = dati.date() == now_t.date() - td(days=5)
+    today = dati.date() == now_t.date() #- td(days=5)
     if today:
         deposit_history_text = "Сегодня " + deposit_history_text
     else:
@@ -122,6 +122,9 @@ def wait(settings):
                 compare_list.append(compare0[1])
     if compare_list == []:
         seconds = compare("23:59")[1] + 62
+        dbl = outgoing(dbl)
+        item = {now_date: dbl}
+        json_write_item(db_name, item)
         print(f"Ждём полночь, через {seconds} секунд, будет {dt.now()+td(seconds=seconds)}")
     else:
         seconds = min(compare_list)+1
@@ -154,26 +157,26 @@ def check_db(settings):
     now_date = str(dt.utcnow().date())
     y,d,m = now_date.split('-')
     db_name = y+'-'+d+'.txt'
-    if file_exists(db_name): # [Есть год-месяц.txt файл ] ДА
+    if file_exists(db_name):                            # [Есть год-месяц.txt файл ] ДА
         print('[Есть год-месяц.txt файл ] ДА')
         db = json_read(db_name)
         dbl = db.get(now_date)
         if dbl is None:
-            dbl = create_blank(elements)  # Создать год-месяц-день + Создать активы + blank
+            dbl = create_blank(elements)                # Создать год-месяц-день + Создать активы + blank
             json_write_item(db_name, dbl, el=None)
             print('\tдобавлена запись',now_date)
         else:
             print('\tзапись', now_date, 'существует')
-    else:   # [Есть год-месяц.txt файл ] НЕТ
+    else:                                               # [Есть год-месяц.txt файл ] НЕТ
         print('[Есть год-месяц.txt файл ] НЕТ')
-        db = {}                                     # Создать год-месяц
-        dbl = create_blank(elements)                # Создать год-месяц-день + Создать активы + blank
-        db.update(dbl)                              # Добавляем строку созданную ывыше в db
-        json_write(db_name,db)                      # Записываем db.txt
+        db = {}                                         # Создать год-месяц
+        dbl = create_blank(elements)                    # Создать год-месяц-день + Создать активы + blank
+        db.update(dbl)                                  # Добавляем строку созданную ывыше в db
+        json_write(db_name,db)                          # Записываем db.txt
         print('\tсоздан файл',db_name, 'со структурой')
 
 if __name__ == '__main__':
-    global bc,debug
+    global bc,debug,now_date,db_name
     settings = []
     while True:
         if settings != []:
@@ -183,7 +186,6 @@ if __name__ == '__main__':
         bc = cls_binance(api_key=api_key, secret_key=secret_key, debug=debug)                                                               # Грузим API.
         settings=json_read("settings.txt")                                                                          # Грузим настройки.
         check_db(settings)
-
         now_date = str(dt.utcnow().date())
         y, d, m = now_date.split('-')
         db_name = y + '-' + d + '.txt'
@@ -240,9 +242,6 @@ if __name__ == '__main__':
                 sleep(wait(settings))
             else:                                                                                                   # [есть строки] НЕТ
                 if debug: print("[DEBUG]","[есть строки] НЕТ")
-                dbl = outgoing(dbl)
-                item = {now_date: dbl}
-                json_write_item(db_name, item)
                 sleep(wait(settings))
             today = dt.now().day
             print()
