@@ -24,6 +24,6 @@ if __name__ == '__main__':
     for i in range(1,31+1):
         d = str(i).rjust(2,"0")
         print(f"{d}.03.2020",cbr('USD',data = f"{d}/03/2020"))
-    for i in range(1,2+1):
+    for i in range(1,7+1):
         d = str(i).rjust(2,"0")
         print(f"{d}.04.2020",cbr('USD',data = f"{d}/04/2020"))
