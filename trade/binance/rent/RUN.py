@@ -127,9 +127,9 @@ def wait(settings):
         json_write_item(db_name, item)
         print(f"Ждём полночь, через {seconds} секунд, будет {dt.now()+td(seconds=seconds)}")
     else:
-        seconds = min(compare_list)+1
+        seconds = min(compare_list)
         print(f"Ждём, через {seconds} секунд, будет {dt.now()+td(seconds=seconds)}")
-    return seconds
+    return seconds+1
 
 def check_db(settings):
     def create_blank(elements):
@@ -175,6 +175,14 @@ def check_db(settings):
         json_write(db_name,db)                          # Записываем db.txt
         print('\tсоздан файл',db_name, 'со структурой')
 
+def cbr_usd(dbl):
+    for el in dbl:
+        if el != 'USDT':
+            if dbl[el]['cbr'] == {}:
+                dbl[el]['cbr'].update({'requestTime': int(t())})
+                dbl[el]['cbr'].update(cbr("USD"))
+    return dbl
+
 if __name__ == '__main__':
     global bc,debug,now_date,db_name
     settings = []
@@ -191,6 +199,7 @@ if __name__ == '__main__':
         db_name = y + '-' + d + '.txt'
         dbl = json_read(db_name)[now_date]
         dbl = bc.incoming(dbl)
+        dbl = cbr_usd(dbl)
         item = {now_date:dbl}
         json_write_item(db_name, item)
         print('dbl:',dbl)
@@ -199,7 +208,7 @@ if __name__ == '__main__':
             bc = cls_binance(api_key=api_key, secret_key=secret_key, debug=False)                                                               # Грузим API.
             if debug:
                 print("[DEBUG]",f"len({len(settings)})","settings ==",settings)                                     #
-            if len(settings) > 0:                                                                                  # [есть строки] ДА
+            if len(settings) > 0:                                                                                   # [есть строки] ДА
                 now_t = now_time()                                                                                  # Текущее время.
                 settings_pop = []                                                                                   #
                 for el in settings:                                                                                 # ПЕРЕБОР ВСЕХ ПАР.

@@ -27,7 +27,6 @@ if __name__ == '__main1__':
 #
 #print(qwe)
 
-
 def create_blank(elements):
     # Создать бланк.
     now_date = dt.utcnow().date()
@@ -100,9 +99,9 @@ if __name__ == '__main__':
     print('\n\n\n')
     ####################################################
     ### Создание переменных ###
-    const = {'BTC': {'b': 'Antminer S9', 'c': 10, 'l': 1.5},
-             'ETH': {'b': 'GPU', 'c': 10, 'l': 1.4},
-             'LTC': {'b': 'Antminer L3', 'c': 10, 'l': 1}}
+    const = {'BTC': {'b': 'Antminer S9', 'c': 10, 'l': 1.5,'n': 2.5,'s': 1.1},
+             'ETH': {'b': 'GPU', 'c': 10, 'l': 1.4,'n': 2.5,'s': 1.1},
+             'LTC': {'b': 'Antminer L3', 'c': 10, 'l': 1,'n': 2.5,'s': 1.1}}
     txt_a = ""              # Дата
     txt_b = "Antminer S9"   # Тип оборудования
     txt_c = 100             # Количество оборудования
@@ -117,20 +116,22 @@ if __name__ == '__main__':
     txt_l = 1.00            # Коэфф. Потребления
     txt_m = 0               # Общее кВт за сутки
     txt_n = 2.5             # Ставка, тариф в руб.
-    txt_o = 80              # Курс ЦБ
+    txt_o = 80              # Курс ЦБ # TODO вносить при запуске.
     txt_p = 0               # Ставка, тариф в USD
     txt_q = 0               # Расходы за э/э
     txt_r = 0               # Валовая прибыль
     txt_s = 1.1             # Комиссия за вывод
-    txt_t = 0               # Выведено USDT
-    txt_u = 0               # Прибыль
+    txt_t = 0               # Прибыль
+    txt_u = 0               # Выведено USDT
     txt_v = 0               # Уровень розетки
-    txt_w = 0               # Остаток актива
+    txt_w = 0               # Остаток USDT
+    txt_x = 0               # Остаток актива
+
     txt_o = cbr('USD')
     ######################################################
     ### Заполнение строк ###
     #txt = ""
-    txt = str("Дата;Тип оборудования;Количество оборудования;Актив;Количество вх;Штамп времени продажи;Количество проданного;Курс продажи;Получено USDT;Комиссия от продажи USDT;Прибыль от продажи;Коэфф Потребления;Общее кВт за сутки;Ставка тариф в руб;Курс ЦБ;Ставка тариф в USD;Расходы за э/э;Валовая прибыль;Комиссия за вывод;Выведено USDT;Прибыль;Уровень розетки;Остаток актива\n") #
+    txt = str("Дата;Тип оборудования;Количество оборудования;Актив;Количество вх;Штамп времени продажи;Количество проданного;Курс продажи;Получено USDT;Комиссия от продажи USDT;Прибыль от продажи;Коэфф Потребления;Общее кВт за сутки;Ставка тариф в руб;Курс ЦБ;Ставка тариф в USD;Расходы за э/э;Валовая прибыль;Комиссия за вывод;Прибыль;Выведено USDT;Уровень розетки;Остаток USDT;Остаток актива\n") #
     for el0 in db:
         txt_a = el0
         print(el0)
@@ -140,28 +141,31 @@ if __name__ == '__main__':
             if el1 != 'USDT':
                 txt_b = const[el1]['b']
                 txt_c = const[el1]['c']
-                txt_l = const[el1]['l']
-                txt_m = txt_c * txt_l * 24                              # Общее кВт за сутки
-                txt_p = txt_n / txt_o                                   # Ставка, тариф в USD
-                txt_e = float(db[el0][el1]['deposit'].get('amount',1)) #
+                txt_n = round(const[el1]['n'],3)
+                txt_l = round(const[el1]['l'],3)
+                txt_s = round(const[el1]['s'],3)
+                txt_m = round(txt_c * txt_l * 24,2)                     # Общее кВт за сутки
+                txt_p = round(txt_n / txt_o,4)                                   # Ставка, тариф в USD
+                txt_e = round(float(db[el0][el1]['deposit'].get('amount',1)),8)
                 #txt_f = db[el0][el1]['order'].get('transactTime','000')
                 txt_f =dt.fromtimestamp(int(db[el0][el1]['order'].get('transactTime',1000)/1000)).isoformat()
-                txt_g = float(db[el0][el1]['order'].get('origQty',0))
+                txt_g = round(float(db[el0][el1]['order'].get('origQty',0)),4)
                 if txt_g != 0:
-                    txt_h = float(db[el0][el1]['order'].get('cummulativeQuoteQty',None))/float(db[el0][el1]['order'].get('executedQty',None))
-                    txt_i = db[el0][el1]['order'].get('cummulativeQuoteQty',0)
+                    txt_h = round(float(db[el0][el1]['order'].get('cummulativeQuoteQty',None))/float(db[el0][el1]['order'].get('executedQty',None)),3)
+                    txt_i = round(float(db[el0][el1]['order'].get('cummulativeQuoteQty',0)),3)
                     fills = db[el0][el1]['order'].get('fills',[{'commission':'0.0'},{'commission':'0.0'}])
                     commission = 0
                     for el in fills:
                         commission = commission + float(el['commission'])
-                    txt_j = commission
-                    txt_k = float(txt_i) - float(txt_j)
-                    txt_q = txt_m * txt_p
-                    txt_r = txt_k - txt_q
-                    txt_t = txt_k
-                    txt_u = txt_r - txt_s
-                    txt_v = txt_q / txt_e
-                    txt_w = txt_e - txt_g
+                    txt_j = round(commission,4)
+                    txt_k = round(float(txt_i) - float(txt_j),3)
+                    txt_q = round(txt_m * txt_p,3)
+                    txt_r = round(txt_k - txt_q,3)
+                    txt_t = round(txt_r - txt_s,3)
+                    txt_u = round(txt_t,3)
+                    txt_v = round(txt_q / txt_e,3)
+                    txt_w = round(txt_t - txt_u,3)
+                    txt_x = round(txt_e - txt_g,8)
                 # incoming
                 # deposit
                 # order
@@ -193,7 +197,8 @@ if __name__ == '__main__':
                             str(txt_t) + "," + \
                             str(txt_u) + "," + \
                             str(txt_v) + "," + \
-                            str(txt_w) + "\n"
+                            str(txt_w) + "," + \
+                            str(txt_x) + "\n"
                 print('\t\t',csv_line)
                 csv_line = csv_line.replace(",", ";").replace(".", ",").replace("1970-01-01T08:00:01", "0000-00-00 00:00:00")
                 #csv_line = csv_line.replace(".", ",") #.replace("1970-01-01T08:00:01", "0000-00-00 00:00:00")

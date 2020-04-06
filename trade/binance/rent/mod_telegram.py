@@ -11,6 +11,7 @@ def telegram(text="тест",endpoints="getUpdates",timeout = 3,token = None, ch
         url = f'https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={text}'
     else:
         url = f'https://api.telegram.org/bot{token}/getMe'
+    req = None
     try:
         req = requests.get(url,timeout=timeout).text
     except requests.exceptions.ConnectTimeout:
@@ -25,5 +26,5 @@ def telegram(text="тест",endpoints="getUpdates",timeout = 3,token = None, ch
         socket.socket = socks.socksocket
         req = requests.get(url, timeout=timeout).text
     except:
-        print('Что то пошло не так.')
+        print('[ERROR]: mod_telegram.telegram() Что то пошло не так.')
     return req

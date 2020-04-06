@@ -7,7 +7,12 @@ class cls_binance():
         self.debug = debug
         self.asset = asset.upper()
         self.symbol = symbol
-        self.client = Clibin(api_key, secret_key)
+        try:
+            self.client = Clibin(api_key, secret_key)
+        except binance.exceptions.BinanceAPIException:
+            self.client = Clibin(api_key, secret_key)
+        except:
+            print('Что то пошло не так.')
         self.time()
     def time(self):
         '''
