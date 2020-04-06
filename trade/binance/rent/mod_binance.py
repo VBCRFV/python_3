@@ -105,3 +105,6 @@ class cls_binance():
             dbl.update({'USDT':{'outgoing':self.client.get_asset_balance(asset='USDT')}})
             dbl['USDT']['outgoing'].update({'requestTime': int(t())})
         return dbl
+
+if __name__ == '__main__':
+    pass
