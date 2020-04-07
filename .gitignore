@@ -1,6 +1,14 @@
 __pycache__
 private.py
+private*.py
+private*.xlsx
+*.xlsx
 api.py
+log.txt
 *.pem
 *.sec
+*.txt
+*.csv
 .*/
+*.zip
+*.zip
