@@ -11,15 +11,15 @@ settings = json_read(settings_fn)
 whait = settings['whait']
 print('access_list:',access_list)
 
-def telegram(text="тест",endpoints="getUpdates",timeout = 3,token = "1083928532:AAEENeby6Z8zNbtLqj5k_fAdHuJgZ6FRdE0"):
+def telegram(text="тест",endpoints="getUpdates",timeout = 3,bot = "1234567890:ABCDEFGHIKLMNOPQRSTVXYZ",chat_id = "-1234567890"):
     from time import time
     import requests
     if endpoints=="getUpdates":
-        url = f'https://api.telegram.org/bot{token}/getUpdates'
+        url = f'https://api.telegram.org/bot{bot}/getUpdates'
     elif endpoints=="sendMessage":
-        url = f'https://api.telegram.org/bot{token}/sendMessage?chat_id=374415483&text={text}'
+        url = f'https://api.telegram.org/bot{bot}/sendMessage?chat_id={chat_id}&text={text}'
     else:
-        url = f'https://api.telegram.org/bot{token}/getMe'
+        url = f'https://api.telegram.org/bot{bot}/getMe'
     try:
         req = requests.get(url,timeout=timeout).text
     except requests.exceptions.ConnectTimeout:

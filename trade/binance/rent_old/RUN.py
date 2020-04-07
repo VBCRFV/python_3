@@ -31,12 +31,10 @@ GIT
 from time import time as t, sleep
 from datetime import datetime as dt, timedelta as td
 
-from imports import telegram
+from mod_telegram import telegram
 from mod_ticker import cbr
 from mod_binance import cls_binance
 from mod_txt import json_read,json_write,json_write_item,text_write,file_exists
-
-from private import token, chat_id
 
 global debug
 
@@ -93,7 +91,7 @@ def get_deposit_history(asset=None):
     else:
         deposit_history_text = "Последнее " + deposit_history_text
     if debug: print("TELEGRAM =>\n\t",deposit_history_text)
-    telegram(text=deposit_history_text, endpoints='sendMessage',bot=token,chat_id=chat_id)
+    telegram(text=deposit_history_text, endpoints='sendMessage')
     return [today, deposit_history]
     ### deposit end ### deposit end ### deposit end ### deposit end ### deposit end ### deposit end ###
 
@@ -258,4 +256,3 @@ if __name__ == '__main__':
                 sleep(wait(settings))
             today = dt.now().day
             print()
-
