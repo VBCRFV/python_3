@@ -2,4 +2,4 @@
 from mod_ticker import cbr
 
 if __name__ == '__main__':
-    print(cbr("USD"))
+    print(cbr("USD")['USD']+1)

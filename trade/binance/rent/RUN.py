@@ -202,7 +202,7 @@ if __name__ == '__main__':
         dbl = cbr_usd(dbl)
         item = {now_date:dbl}
         json_write_item(db_name, item)
-        print('dbl:',dbl)
+        #print('dbl:',dbl)
         today = dt.now().day
         while today == dt.now().day:
             bc = cls_binance(api_key=api_key, secret_key=secret_key, debug=False)                                                               # Грузим API.
