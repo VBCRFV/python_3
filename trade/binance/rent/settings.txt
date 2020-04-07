@@ -1,0 +1,1 @@
+{"btc": {"time": "07:00", "rnd": 4, "ratio": 0.7},"eth": {"time": "07:00", "rnd": 4, "ratio": 1.0},"ltc": {"time": "07:00", "rnd": 4, "ratio": 1.0}}
